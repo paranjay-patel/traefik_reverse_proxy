@@ -1,0 +1,39 @@
+debug = true
+logLevel = "DEBUG"
+defaultEntryPoints = ["https","http"]
+
+[api]
+insecure = true
+dashboard = true
+
+[providers.docker]
+exposedByDefault = false
+network = "traefik"
+endpoint = "unix:///var/run/docker.sock"
+
+#[providers.file]
+#filename = "traefik_dynamic.toml"
+#[providers]
+#[providers.file]
+#filename = "/traefik_dynamic.toml"
+
+[log]
+level = "ERROR"
+
+[accessLog]
+filePath = "/dev/stdout"
+
+[entryPoints]
+  [entryPoints.web]
+    address = ":80"
+   [entryPoints.web.http.redirections]
+    [entryPoints.web.http.redirections.entrypoint]
+      to = "websecure"
+  [entrypoints.websecure]
+    address = ":443"
+
+[certificatesResolvers.lets-encrypt.acme]
+email = "paranjay.logicwind@gmail.com"
+storage = "acme.json"
+[certificatesResolvers.lets-encrypt.acme.httpChallenge]
+entryPoint = "web"
